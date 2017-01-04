@@ -1,7 +1,6 @@
 package test;
 
 import java.awt.Color;
-import java.awt.TextComponent;
 
 import lab.LabFrame;
 import lab.component.HorizontalGraduation;

@@ -28,10 +28,10 @@ public class ParticleTestLab extends LabFrame implements MouseMotionListener {
 		particles.setColor(new Color(0, 0, 0, 255));
 		particles.setColors(new Color(100, 100, 100, 100), new Color(0, 0, 0, 0));
 		
-		particles.setColorFade(2);
+		particles.setColorFade(5);
 		
-		particles.setVelocity(new RandomVector2Generator(-2, -2, 2, 2, RandomVector2Generator.ELLIPSE));
-		particles.setSpeedChange(-0.01);
+		particles.setVelocity(new RandomVector2Generator(-2, -3, 2, -5, RandomVector2Generator.ELLIPSE));
+		particles.setSpeedChange(-0.025);
 		
 		particles.setParticleWidth(5);
 		particles.setParticleHeight(5);

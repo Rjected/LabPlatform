@@ -2,6 +2,7 @@ package lab.component.fx;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Arrays;
 
 import javax.swing.JPanel;
 
@@ -225,13 +226,31 @@ public class ParticleSystem extends LabComponent {
 	}
 	
 	public void spawnParticle() {
-		for (Particle particle : particles) {
+		Particle particle;
+		
+		for (int i = 0; i < particles.length; i++) {
+			particle = particles[i];
+			
 			if (!particle.isActive()) {
 				particle.start();
+				
+				insertAtStart(particle, i);
+				
 				return;
 			}
 		}
 	}
+	
+	private void insertAtStart(Particle p, int c) {
+		
+		for (int i = c - 1; i >= 0; i--) {
+			particles[i + 1] = particles[i];
+		}
+		
+		particles[0] = p;
+		
+	}
+	
 
 	@Override
 	public void draw(int x, int y, int width, int height, Graphics g) {
