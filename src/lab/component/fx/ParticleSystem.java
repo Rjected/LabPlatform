@@ -2,7 +2,6 @@ package lab.component.fx;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Arrays;
 
 import javax.swing.JPanel;
 
