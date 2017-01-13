@@ -23,7 +23,6 @@ public abstract class LabFrame extends JFrame {
 	private boolean started = false;
 	private final LabComponent root;
 	
-	
 	public LabFrame(String name, int width, int height) {
 		setSize(width, height);
 		setTitle(name);

@@ -1,20 +1,19 @@
 package lab.component;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
 
-public class Piston extends GraduatedComponent implements MouseMotionListener, MouseListener {
+public class Piston extends GraduatedComponent {
 
 	private Color gasColor = Color.red;
 	private double gasMass = 1.0;
 	private double transparencyModifier = 1.0;
+	private ClickableArea dragArea = new ClickableArea(this);
 	
 	public Piston(int width, int height) {
 		super(width, height);
@@ -28,7 +27,9 @@ public class Piston extends GraduatedComponent implements MouseMotionListener, M
 		
 		setValue(0);
 		
-		this.setShowValue(true);
+		setShowValue(true);
+		
+		dragArea.setScale(false);
 	}
 	
 	public Color getGasColor() {
@@ -67,6 +68,8 @@ public class Piston extends GraduatedComponent implements MouseMotionListener, M
 		double pistonY = (range - getValue()) / range * height;
 		double pistonHeight = getGraduation().getSubLineIntervals() / range * height;
 		
+		
+		
 		g.setColor(Color.lightGray);
 		g.fillRect(x, y, width, height);
 		
@@ -93,24 +96,13 @@ public class Piston extends GraduatedComponent implements MouseMotionListener, M
 			getGraduation().draw(g, width, height);
 		}
 		
-		if (click != null) {
-			double mx = click.getX(), my = click.getY();
-
-			if (my > y + pistonY - pistonHeight && my < y + pistonY && mx > x && mx < x + width) {
-				
-				mouseCoord = click;
-				
-				drag = true;
-				click = null;
-				
-				
-			}
-		}
+		dragArea.checkRaw(x, (int) (pistonY - pistonHeight) + y, width, (int) pistonHeight);
 		
 		
-		if (drag) {
-			setValue(range - (double) (mouseCoord.getY() - y) / height * range);
+		if (dragArea.hasClick()) {
+			setValue(range - (double) (dragArea.getMousePosition().y - y) / height * range);
 		}
+		
 		
 
 		if (getValue() > range) {
@@ -131,42 +123,7 @@ public class Piston extends GraduatedComponent implements MouseMotionListener, M
 	
 	@Override
 	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		panel.addMouseListener(this);
-		panel.addMouseMotionListener(this);
+		dragArea.initializeMouseListeners(panel);
 	}
 	
-	private Point mouseCoord = new Point(0, 0);
-	private Point click = null;
-	private boolean drag = false;
-	
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		drag = false;
-		click = null;
-	}
-	
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		mouseCoord = e.getPoint();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		click = e.getPoint();
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) { }
-
-	@Override
-	public void mouseEntered(MouseEvent e) { }
-	
-	@Override
-	public void mouseExited(MouseEvent e) { }
-	
-	@Override
-	public void mouseMoved(MouseEvent e) { }
-	
-	
-
 }

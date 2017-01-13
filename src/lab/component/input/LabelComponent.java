@@ -1,6 +1,7 @@
 package lab.component.input;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.JLabel;
@@ -31,6 +32,14 @@ public class LabelComponent extends InputComponent {
 	
 	public String getText() {
 		return labelText;
+	}
+	
+	public void setFontSize(int size) {
+		label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, size));
+	}
+	
+	public void setFont(Font font) {
+		label.setFont(font);
 	}
 	
 	@Override

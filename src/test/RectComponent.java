@@ -2,79 +2,37 @@ package test;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
 import lab.component.LabComponent;
+import lab.component.UserComponentResizing;
 
-public class RectComponent extends LabComponent implements MouseMotionListener {
+public class RectComponent extends LabComponent {
+	
+	private final UserComponentResizing resize = new UserComponentResizing(this);
 	
 	public RectComponent(int width, int height) {
 		super(width, height);
 		
 	}
 	
-	private int lastX;
-	private int lastY;
-	private int lastWidth;
-	private int lastHeight;
-	
-	private boolean contains(Point p) {
-		return p.y > lastY && p.y < lastY + lastHeight && p.x > lastX && p.x < lastX + lastWidth;
-	}
-	
 	@Override
 	public void draw(int x, int y, int width, int height, Graphics g) {
-		g.setColor(new Color(255, 0, 0, 50));
+		g.setColor(Color.red);
 		g.fillRect(x, y, width, height);
 		
-		if (mouseClick != null) {
-			double mx = mouseClick.getX(), my = mouseClick.getY();
-
-			if (my > y && my < y + height && mx > x && mx < x + width) {
-				
-				addChild(new RectComponent(getWidth() / 2, getHeight() / 2));
-
-				
-			}
-			
+		g.setColor(Color.black);
+		g.drawRect(x, y, width, height);
 		
-			
-			mouseClick = null;
-		}
-		
-		lastX = x;
-		lastY = y;
-		lastWidth = width;
-		lastHeight = height;
+		resize.check(x, y, width, height);
 
 	}
 
 	@Override
 	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		panel.addMouseMotionListener(this);
-		
+		resize.initializeMouseListeners(panel);
 	}
 
-	private Point mouseClick = null;
 	
-
-	@Override
-	public void mouseDragged(MouseEvent arg0) { }
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		
-		for (LabComponent c : getChildren()) {
-			if (((RectComponent) c).contains(e.getPoint())) {
-				return;
-			}
-		}
-		
-		mouseClick = e.getPoint();
-	}
-
 }
