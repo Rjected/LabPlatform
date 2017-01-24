@@ -25,9 +25,9 @@ public class SubstanceData {
 		try {
 			getDataForSubstance("Sulfur");
 			getDataForSubstance("H2O");
-			getDataForSubstance("C6H6");
-			getDataForSubstance("C3H6O");
-			getDataForSubstance("C2H6O");
+			getDataForSubstance("Benzene");
+			getDataForSubstance("Acetone");
+			getDataForSubstance("Ethanol");
 			getDataForSubstance("Carbon");
 			getDataForSubstance("NaCl");
 		} catch (IOException e) {
@@ -129,7 +129,7 @@ public class SubstanceData {
 			}
 
 			tempIndex = page.indexOf(
-					"<a href=\"/wiki/Enthalpy_of_fusion\" title=\"Enthalpy of fusion\">Heat&#160;of&#160;fusion</a></th>");
+					"<a href=\"/wiki/Enthalpy_of_fusion\" title=\"Enthalpy of fusion\">Heat&#160;of&#160;fusion</a></th>") + "<a href=\"/wiki/Enthalpy_of_fusion\" title=\"Enthalpy of fusion\">Heat&#160;of&#160;fusion</a></th>".length();
 			cutString = page.substring(tempIndex, page.length());
 			/*if (cutString.indexOf(">") != -1) {
 				cutString = cutString.substring(cutString.indexOf(">") + 1, cutString.length());
@@ -158,14 +158,22 @@ public class SubstanceData {
 				heatOfFusion = cutString;
 			}
 			*/
+			while (cutString.indexOf(">") != -1 && cutString.indexOf(":")<cutString.indexOf(">")||cutString.indexOf(">") != -1 && cutString.indexOf(" ")<cutString.indexOf(">")) {
+				if(cutString.indexOf("<")!=-1&&cutString.indexOf("<")>cutString.indexOf(">")) {
+					cutString = cutString.substring(cutString.indexOf(">") + 1, cutString.indexOf("<"));
+				} else {
+					//System.out.println(cutString);
+					cutString = cutString.substring(cutString.indexOf(">") + 1, cutString.length());
+				}
+			}
+			
 			while (cutString.indexOf(":") != -1)
 				cutString = cutString.substring(cutString.indexOf(":") + 1, cutString.length());
 			
 			while (cutString.indexOf(" ") != -1)
 				cutString = cutString.substring(cutString.indexOf(" ") + 1, cutString.length());
 
-			while (cutString.indexOf(">") != -1)
-				cutString = cutString.substring(cutString.indexOf(">") + 1, cutString.length());
+			
 			
 			molarMass = findTableProperty(
 					"<a href=\"/wiki/Relative_atomic_mass\" title=\"Relative atomic mass\">Standard atomic weight</a> <span style=\"font-weight:normal;\">(<i>A</i><sub>r</sub>)</span></th>",
@@ -227,7 +235,12 @@ public class SubstanceData {
 			tempSubstance.setHeatOfFusion(Double.parseDouble(heatOfFusion));
 		}
 		if (!molarMass.equals("N/A")) {
-			tempSubstance.setMolarMass(Double.parseDouble(molarMass));
+			try {
+				tempSubstance.setMolarMass(Double.parseDouble(molarMass));
+			}
+			catch(Exception e) {
+				molarMass = findTableProperty("Molar mass</a></td>", "&#160;g", 2);
+			}
 		}
 		if (!formula.equals("N/A")) {
 			tempSubstance.setFormula(formula);
