@@ -108,17 +108,13 @@ public class TestLab extends LabFrame {
 		manometer.setShowValue(true);
 		addComponent(manometer);
 
-		slider = new SliderComponent(120, 20, 0, 25, true) {
-			@Override
-			public void onChange() {
-				
-			}
-		};
+		slider = new SliderComponent(120, 20, 0, 25, 1, SliderComponent.HORIZONTAL);
 		slider.setOffsetX(60);
 		slider.setOffsetY(100);
 		addComponent(slider);
 		
-		switchC = new SwitchComponent(120, 20, "On", "Off", false) {
+		
+		switchC = new SwitchComponent(120, 20) {
 			@Override
 			public void onAction() {
 				
@@ -163,7 +159,7 @@ public class TestLab extends LabFrame {
 		
 		t++;
 		
-		flask.setValue(slider.getSlider().getValue());
+		flask.setValue(slider.getValue());
 		
 		manometer.setValue((Math.sin(t / 100) + 1) * 760);
 		thermometer.setValue(((Math.sin(t / 100) + 1) * 130 / 2) - 30);

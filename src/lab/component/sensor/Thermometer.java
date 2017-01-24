@@ -7,8 +7,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-
 import lab.LabFrame;
 import lab.component.GraduatedComponent;
 import lab.component.VerticalGraduation;
@@ -77,12 +75,6 @@ public class Thermometer extends GraduatedComponent {
 		
 	}
 
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	
 	
 }

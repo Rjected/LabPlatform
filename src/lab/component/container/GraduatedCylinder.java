@@ -6,8 +6,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-
 import lab.component.VerticalGraduation;
 
 public class GraduatedCylinder extends Container {
@@ -56,12 +54,5 @@ public class GraduatedCylinder extends Container {
 		
 		
 	}
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 }

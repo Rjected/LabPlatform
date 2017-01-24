@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import lab.component.ClickableArea;
 import lab.component.EmptyComponent;
 import lab.component.LabComponent;
+import lab.component.UserComponentResizing;
 import lab.component.input.ButtonComponent;
 
 public class EditorWindow extends LabComponent {
@@ -22,17 +23,19 @@ public class EditorWindow extends LabComponent {
 	private final LabComponent dragBar;
 	private final ButtonComponent closeButton;
 	private ClickableArea dragBarDragArea;
+	private final UserComponentResizing resizing = new UserComponentResizing(this, 20, 20);
 	
 	public EditorWindow(String name, int width, int height) {
 		super(width, height);
 		
 		this.name = name;
 		
-		dragBarDragArea = new ClickableArea(this, 0, -DRAG_BAR_HEIGHT, width, DRAG_BAR_HEIGHT);
+		dragBarDragArea = new ClickableArea(this);
 		
 		
 		dragBar = new EmptyComponent(width, DRAG_BAR_HEIGHT);
 		dragBar.setOffsetY(-DRAG_BAR_HEIGHT);
+		dragBar.setScaleChildren(false);
 		
 		final EditorWindow t = this;
 		
@@ -44,7 +47,7 @@ public class EditorWindow extends LabComponent {
 		};
 		
 		closeButton.setOffsetX(width - closeButton.getWidth());
-		closeButton.setOffsetY(1);
+		closeButton.setOffsetY(0);
 		
 		dragBar.addChild(closeButton);
 		
@@ -54,6 +57,12 @@ public class EditorWindow extends LabComponent {
 		addChild(content);
 		
 		setLayout(FREE_FORM);
+		
+		resizing.setClickableAreaWidth(RESIZE_DRAG_AREA_SIZE);
+		resizing.enableNDrag(false);
+		resizing.enableNEDrag(false);
+		resizing.enableNWDrag(false);
+		
 		
 	}
 	
@@ -70,42 +79,57 @@ public class EditorWindow extends LabComponent {
 		return content;
 	}
 	
+	public int getMinWidth() {
+		return resizing.getMinWidth();
+	}
+	
+	public void setMinWidth(int minWidth) {
+		resizing.setMinWidth(minWidth);
+	}
+
+	public int getMinHeight() {
+		return resizing.getMinHeight();
+	}
+
+	public void setMinHeight(int minHeight) {
+		resizing.setMinHeight(minHeight);
+	}
+
 	@Override
 	public void draw(int x, int y, int width, int height, Graphics g) {
 		g.setColor(Color.black);
 		g.fillRect(x, y - DRAG_BAR_HEIGHT, width, DRAG_BAR_HEIGHT);
 		
 		g.setColor(Color.white);
-		drawCenteredString(g, name, x + width / 2, y - DRAG_BAR_HEIGHT / 2);
+		drawCenteredString(g, name, x + width / 2, y - DRAG_BAR_HEIGHT / 3);
 		
 		g.setColor(Color.gray);
 		g.drawRect(x, y, width, height);
 		
+		closeButton.setOffsetX(width - closeButton.getWidth());
 		
-		
-		dragBarDragArea.check(x, y, width, height);
+		dragBarDragArea.checkRaw(x, y - DRAG_BAR_HEIGHT, width, DRAG_BAR_HEIGHT);
 		
 		if (dragBarDragArea.hasClick()) {
 			
 			Point newOffset = new Point();
 			newOffset.x = dragBarDragArea.getMousePosition().x + dragBarDragArea.getClickRelativeToPosition().x;
-			newOffset.y = dragBarDragArea.getMousePosition().y + dragBarDragArea.getClickRelativeToPosition().y;
+			newOffset.y = dragBarDragArea.getMousePosition().y + dragBarDragArea.getClickRelativeToPosition().y + DRAG_BAR_HEIGHT;
 			
 			if (newOffset.x != getOffsetX() || newOffset.y != getOffsetY()) {
 				setOffsetX(newOffset.x);
 				setOffsetY(newOffset.y);
-
-				redrawInputs();
 			}
 			
 		}
 		
-		
+		resizing.check(x, y, width, height);
 	}
 
 	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
+	public void initJPanel(JPanel panel) {
 		dragBarDragArea.initializeMouseListeners(panel);
+		resizing.initializeMouseListeners(panel);
 	}
 	
 	

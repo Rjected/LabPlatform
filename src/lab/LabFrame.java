@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import draw.DrawThread;
 import draw.animation.Animator;
+import lab.component.EmptyComponent;
 import lab.component.LabComponent;
 
 public abstract class LabFrame extends JFrame {
@@ -32,12 +33,7 @@ public abstract class LabFrame extends JFrame {
 		startingWidth = width;
 		startingHeight = height;
 		
-		root = new LabComponent(width, height) {
-			@Override
-			public void draw(int x, int y, int w, int h, Graphics g) { }
-			@Override
-			public void drawInputs(int x, int y, int width, int height, JPanel panel) { }
-		};
+		root = new EmptyComponent(width, height);
 		
 		inst = this;
 		
@@ -52,6 +48,10 @@ public abstract class LabFrame extends JFrame {
 		canvas.maxFPS = fps;
 		new DrawThread(canvas, fps);
 		started = true;
+	}
+	
+	public JPanel getDrawCanvas() {
+		return canvas;
 	}
 	
 	public void addComponent(LabComponent component) {

@@ -17,6 +17,8 @@ public class ClickableArea implements MouseInputListener, MouseMotionListener {
 	private boolean hasClick = false;
 	private boolean hasHover = false;
 	private boolean scale = false;
+	private boolean enabled = true;
+	private boolean initialized = false;
 	
 	public ClickableArea(LabComponent component, int x, int y, int width, int height) {
 		this.component = component;
@@ -61,6 +63,21 @@ public class ClickableArea implements MouseInputListener, MouseMotionListener {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		
+		if (!enabled) {
+			clickPosition = null;
+			hasClick = false;
+			relativeClick = null;
+		}
+		
+	}
 
 	public Point getMousePosition() {
 		return mousePosition;
@@ -69,7 +86,7 @@ public class ClickableArea implements MouseInputListener, MouseMotionListener {
 	public Point getClickPosition() {
 		return clickPosition;
 	}
-
+	
 	public boolean hasClick() {
 		return hasClick;
 	}
@@ -99,12 +116,19 @@ public class ClickableArea implements MouseInputListener, MouseMotionListener {
 	}
 	
 	public void initializeMouseListeners(JPanel panel) {
+		if (initialized) {
+			return;
+		}
+		
 		panel.addMouseListener(this);
 		panel.addMouseMotionListener(this);
+		initialized = true;
 	}
 	
 	public void check(int sx, int sy, int sw, int sh) {
-		
+		if (!enabled) {
+			return;
+		}
 		
 		if (clickPosition != null && !hasClick) {
 			
@@ -149,6 +173,9 @@ public class ClickableArea implements MouseInputListener, MouseMotionListener {
 	}
 	
 	public void checkRaw(int sx, int sy, int sw, int sh) {
+		if (!enabled) {
+			return;
+		}
 		
 		if (clickPosition != null && !hasClick) {
 			
@@ -183,7 +210,7 @@ public class ClickableArea implements MouseInputListener, MouseMotionListener {
 	public void mouseReleased(MouseEvent e) {
 		hasClick = false;
 		clickPosition = null;
-		mousePosition = null;
+		relativeClick = null;
 	}
 	
 	

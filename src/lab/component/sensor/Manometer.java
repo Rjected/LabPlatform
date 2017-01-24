@@ -5,8 +5,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import javax.swing.JPanel;
-
 import lab.component.GraduatedComponent;
 import lab.component.Graduation;
 import lab.component.VerticalGraduation;
@@ -126,12 +124,6 @@ public class Manometer extends GraduatedComponent {
 			
 			g.drawString(str, x + metrics.stringWidth(str) / 2, y + height + 20);
 		}
-	}
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

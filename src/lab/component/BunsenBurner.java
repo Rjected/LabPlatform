@@ -3,8 +3,6 @@ package lab.component;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import javax.swing.JPanel;
-
 import lab.component.fx.Flame;
 
 public class BunsenBurner extends LabComponent {
@@ -35,11 +33,6 @@ public class BunsenBurner extends LabComponent {
 		g.fillRect(x, y, width, height);
 		g.setColor(Color.darkGray);
 		g.fillRect(x - width / 5, y + height - height / 10, width + width / 5 * 2, height / 10);
-	}
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		
 	}
 
 }

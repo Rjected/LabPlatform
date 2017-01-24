@@ -21,21 +21,40 @@ public abstract class LabComponent implements Drawable {
 	private int offsetX = 0;
 	private int offsetY = 0;
 	private int zOrder = 0;
-	private boolean inputsDrawn = false;
 	private boolean visible = true;
 	private int layout = PARAGRAPH;
 	private boolean scaleChildren = true;
 	private List<LabComponent> children = new ArrayList<LabComponent>();
 	private LabComponent parent = null;
+	private LabComponent root = null;
 	private boolean needsChildSort = false;
+	private int lastDrawX = -1;
+	private int lastDrawY = -1;
+	private int lastDrawWidth = -1;
+	private int lastDrawHeight = -1;
+	private final int startingWidth;
+	private final int startingHeight;
+	private boolean jPanelInitCalled = false;
 	
 	public LabComponent(int width, int height) {
 		this.width = width;
 		this.height = height;
+		this.startingWidth = width;
+		this.startingHeight = height;
+	}
+	
+	private void updateRoot() {
+		root = getRoot(this);
+		
+		for (LabComponent c : children) {
+			c.updateRoot();
+		}
 	}
 	
 	public void addChild(LabComponent component) {
 		component.parent = this;
+		component.updateRoot();
+		
 		children.add(component);
 		
 		needsChildSort = true;
@@ -49,6 +68,8 @@ public abstract class LabComponent implements Drawable {
 	
 	public void removeChild(LabComponent component) {
 		children.remove(component);
+		component.parent = null;
+		component.updateRoot();
 		
 		needsChildSort = true;
 	}
@@ -59,6 +80,10 @@ public abstract class LabComponent implements Drawable {
 	
 	public LabComponent getParent() {
 		return parent;
+	}
+	
+	public LabComponent getRoot() {
+		return root;
 	}
 	
 	public void setWidth(int width) {
@@ -105,22 +130,6 @@ public abstract class LabComponent implements Drawable {
 		}
 	}
 	
-	public void setInputsDrawn() {
-		inputsDrawn = true;
-	}
-	
-	public boolean areInputsDrawn() {
-		return inputsDrawn;
-	}
-	
-	public void redrawInputs() {
-		inputsDrawn = false;
-		
-		for (LabComponent child : children) {
-			child.redrawInputs();
-		}
-	}
-	
 	public boolean isVisible() {
 		return visible;
 	}
@@ -149,16 +158,69 @@ public abstract class LabComponent implements Drawable {
 		this.scaleChildren = scaleChildren;
 	}
 
+	public int getLastDrawX() {
+		return lastDrawX;
+	}
+
+	public int getLastDrawY() {
+		return lastDrawY;
+	}
+
+	public int getLastDrawWidth() {
+		return lastDrawWidth;
+	}
+
+	public int getLastDrawHeight() {
+		return lastDrawHeight;
+	}
+	
+	public double getWidthScaleRatio() {
+		return (double) width / startingWidth;
+	}
+	
+	public double getHeightScaleRatio() {
+		return (double) height / startingHeight;
+	}
+
+	public boolean isPointCovered(int x, int y, int z) {
+		for (LabComponent c : children) {
+			if (c.contains(x, y)) {
+				if (c.getZOrder() > z) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	private void sortChildren() {
+		Collections.sort(children, new Comparator<LabComponent>() {
+			@Override
+			public int compare(LabComponent c1, LabComponent c2) {
+				return c1.getZOrder() - c2.getZOrder();
+			}
+		});
+	}
+	
+	public boolean contains(int x, int y) {
+		return x >= lastDrawX && x <= lastDrawX + lastDrawWidth && y >= lastDrawY && y <= lastDrawY + lastDrawHeight;
+	}
+	
 	public void update() { // guarenteed to run at constant fps
 		
 	}
 	
+	public void initJPanel(JPanel panel) {
+		
+	}
 	
-	private int prevWidth = -1;
-	private int prevHeight = -1;
-	private boolean redrawInputs = false;
-	
-	public void draw(Graphics g, int px, int py, int w, int h, JPanel canvas, boolean overMaxFPS) {
+	public void draw(Graphics g, int px, int py, int w, int h, JPanel jPanel, boolean overMaxFPS) {
+		if (!jPanelInitCalled) {
+			initJPanel(jPanel);
+			jPanelInitCalled = true;
+		}
+		
 		if (!overMaxFPS) {
 			update();
 		}
@@ -171,38 +233,19 @@ public abstract class LabComponent implements Drawable {
 		draw(px, py, w, h, g);
 		
 		if (layout == PARAGRAPH) {
-			drawParagraph(g, px, py, w, h, canvas, overMaxFPS);
+			drawParagraph(g, px, py, w, h, jPanel, overMaxFPS);
 		} else if (layout == FREE_FORM) {
-			drawFreeForm(g, px, py, w, h, canvas, overMaxFPS);
+			drawFreeForm(g, px, py, w, h, jPanel, overMaxFPS);
 		}
 		
-		redrawInputs = false;
-		
-		if (prevWidth == -1) {
-			prevWidth = canvas.getWidth();
-			prevHeight = canvas.getHeight();
-		} else {
-			
-			if (prevWidth != canvas.getWidth() || prevHeight != canvas.getHeight()) {
-				redrawInputs = true;
-			}
-			
-			prevWidth = canvas.getWidth();
-			prevHeight = canvas.getHeight();
-		}
+		lastDrawX = px;
+		lastDrawY = py;
+		lastDrawWidth = w;
+		lastDrawHeight = h;
 		
 	}
 	
-	private void sortChildren() {
-		Collections.sort(children, new Comparator<LabComponent>() {
-			@Override
-			public int compare(LabComponent c1, LabComponent c2) {
-				return c1.getZOrder() - c2.getZOrder();
-			}
-		});
-	}
-	
-	private void drawParagraph(Graphics g, int px, int py, int w, int h, JPanel canvas, boolean overMaxFPS) {
+	private void drawParagraph(Graphics g, int px, int py, int w, int h, JPanel panel, boolean overMaxFPS) {
 		int maxHeight = Integer.MIN_VALUE;
 		int x = 0, y = 0, swidth, sheight, sx, sy;
 		
@@ -219,8 +262,8 @@ public abstract class LabComponent implements Drawable {
 			}
 			
 			if (scaleChildren) {
-				swidth = (int) ((double) c.getWidth() / width * w);
-				sheight = (int) ((double) c.getHeight() / height * h);
+				swidth = (int) ((double) c.getWidth() / width * w * getWidthScaleRatio());
+				sheight = (int) ((double) c.getHeight() / height * h * getHeightScaleRatio());
 				sx = (int) ((double) (x + c.getOffsetX()) / width * w) + px;
 				sy = (int) ((double) (y + c.getOffsetY()) / height * h) + py;
 			} else {
@@ -231,17 +274,11 @@ public abstract class LabComponent implements Drawable {
 			}
 			
 			if (c.isVisible()) {
-				c.draw(g, sx, sy, swidth, sheight, canvas, overMaxFPS);
-				
+				c.draw(g, sx, sy, swidth, sheight, panel, overMaxFPS);
 			}
 			
 			if (!overMaxFPS) {
 				c.update();
-			}
-			
-			if (!c.areInputsDrawn() || redrawInputs) {
-				c.drawInputs(sx, sy, swidth, sheight, canvas);
-				c.setInputsDrawn();
 			}
 			
 			x += c.getWidth() + c.getOffsetX();
@@ -253,14 +290,14 @@ public abstract class LabComponent implements Drawable {
 		}
 	}
 	
-	private void drawFreeForm(Graphics g, int px, int py, int w, int h, JPanel canvas, boolean overMaxFPS) {
+	private void drawFreeForm(Graphics g, int px, int py, int w, int h, JPanel panel, boolean overMaxFPS) {
 		int swidth, sheight, sx, sy;
 		
 		for (LabComponent c : children) {
 			
 			if (scaleChildren) {
-				swidth = (int) ((double) c.getWidth() / width * w);
-				sheight = (int) ((double) c.getHeight() / height * h);
+				swidth = (int) ((double) c.getWidth() / width * w * getWidthScaleRatio());
+				sheight = (int) ((double) c.getHeight() / height * h * getHeightScaleRatio());
 				sx = (int) ((double) (c.getOffsetX()) / width * w) + px;
 				sy = (int) ((double) (c.getOffsetY()) / height * h) + py;
 			} else {
@@ -271,23 +308,15 @@ public abstract class LabComponent implements Drawable {
 			}
 			
 			if (c.isVisible()) {
-				c.draw(g, sx, sy, swidth, sheight, canvas, overMaxFPS);
+				c.draw(g, sx, sy, swidth, sheight, panel, overMaxFPS);
 			}
 			
 			if (!overMaxFPS) {
 				c.update();
 			}
 			
-			if (!c.areInputsDrawn() || redrawInputs) {
-				c.drawInputs(sx, sy, swidth, sheight, canvas);
-				c.setInputsDrawn();
-			}
-			
 		}
 	}
-	
-	
-	public abstract void drawInputs(int x, int y, int width, int height, JPanel panel);
 	
 	public static void drawCenteredString(Graphics g, String str, int x, int y) {
 		FontMetrics metrics = g.getFontMetrics();
@@ -296,6 +325,19 @@ public abstract class LabComponent implements Drawable {
 		g.drawString(str, x - width / 2, y);
 		
 	}
+	
+	private static LabComponent getRoot(LabComponent p) {
+		if (p.root != null) {
+			return p.root;
+		}
+		
+		if (p.parent != null) {
+			return getRoot(p.parent);
+		} else {
+			return p;
+		}
+	}
+
 	
 	
 }

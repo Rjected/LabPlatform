@@ -33,12 +33,7 @@ public class GraphTestLab extends LabFrame {
 		
 		addComponent(graph);
 		
-		slider = new SliderComponent(750, 20, 0, 100, true) {
-			@Override
-			public void onChange() {
-				
-			}
-		};
+		slider = new SliderComponent(750, 20, 0, 100, 1, SliderComponent.HORIZONTAL);
 		
 		set = new DataSet("test", true, false);
 		

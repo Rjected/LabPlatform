@@ -402,7 +402,7 @@ public class Graph extends LabComponent implements MouseListener, MouseMotionLis
 	
 
 	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
+	public void initJPanel(JPanel panel) {
 		panel.addMouseListener(this);
 		panel.addMouseMotionListener(this);
 	}

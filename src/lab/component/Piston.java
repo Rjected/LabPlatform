@@ -122,7 +122,7 @@ public class Piston extends GraduatedComponent {
 	}
 	
 	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
+	public void initJPanel(JPanel panel) {
 		dragArea.initializeMouseListeners(panel);
 	}
 	

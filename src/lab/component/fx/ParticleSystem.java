@@ -3,8 +3,6 @@ package lab.component.fx;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import javax.swing.JPanel;
-
 import lab.Vector2;
 import lab.component.LabComponent;
 
@@ -284,10 +282,5 @@ public class ParticleSystem extends LabComponent {
 		}
 	}
 
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

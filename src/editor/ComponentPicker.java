@@ -5,8 +5,6 @@ import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JPanel;
-
 import lab.component.BunsenBurner;
 import lab.component.LabComponent;
 import lab.component.Piston;
@@ -107,12 +105,6 @@ public class ComponentPicker extends LabComponent {
 	public void draw(int x, int y, int width, int height, Graphics g) {
 		g.setColor(Color.black);
 		g.drawRect(x, y, width, height);
-		
-	}
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		// TODO Auto-generated method stub
 		
 	}
 

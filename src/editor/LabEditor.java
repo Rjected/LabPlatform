@@ -16,6 +16,8 @@ public class LabEditor extends LabFrame {
 		EditorWindow testWindow = new EditorWindow("Test Window", 180, 360);
 		testWindow.getContent().addChild(new ComponentPicker(180, 360));
 		testWindow.setOffsetY(20);
+		testWindow.setMinWidth(180);
+		testWindow.setMinHeight(360);
 		addComponent(testWindow);
 		
 		start(60);

@@ -2,8 +2,6 @@ package lab.component;
 
 import java.awt.Graphics;
 
-import javax.swing.JPanel;
-
 public class EmptyComponent extends LabComponent {
 
 	public EmptyComponent(int width, int height) {
@@ -12,8 +10,5 @@ public class EmptyComponent extends LabComponent {
 
 	@Override
 	public void draw(int x, int y, int width, int height, Graphics g) { }
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) { }
 
 }

@@ -1,21 +1,28 @@
 package lab.component.input;
 
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
 
-import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.text.MaskFormatter;
 
-public class TextFieldComponent extends InputComponent {
+public class TextFieldComponent extends InputComponent implements ActionListener {
 
-	private int minValue = 0;
-	private int maxValue = 0;
 	private final JFormattedTextField textField;
 
-	public TextFieldComponent(int width, int height, int nonDecimal, int decimal) {
-
+	public TextFieldComponent(int width, int height, String format) {
 		super(width, height);
-		textField = new JFormattedTextField(createFormatter(buildDecimal(nonDecimal, decimal)));
 
+		textField = new JFormattedTextField(createFormatter(format));
+		textField.setColumns(format.length());
+		textField.addActionListener(this);
+
+	}
+
+	public TextFieldComponent(int width, int height, int nonDecimal, int decimal) {
+		this(width, height, buildDecimal(nonDecimal, decimal));
 	}
 
 	protected MaskFormatter createFormatter(String s) {
@@ -24,59 +31,40 @@ public class TextFieldComponent extends InputComponent {
 
 		try {
 			formatter = new MaskFormatter(s);
-		} catch (java.text.ParseException exc) {
-			System.err.println("Formatter is bad: " + exc.getMessage());
-			System.exit(-1);
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
 
 		return formatter;
 	}
 
 	public double getValue() {
-		try {
-			return Double.parseDouble(textField.getText());
-		} catch(Exception e) {
-			System.out.println("Error: String cannot be parsed as double.");
-			return 0;
-		}
-	}
-	
-	public JFormattedTextField getTextField() {
-		return textField;
+		return (double) textField.getValue();
 	}
 
 	public void setText(String s) {
 		try {
 			textField.setValue(s);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			textField.setValue(0);
 		}
 	}
-	
-	@Override
-	public void draw(int x, int y, int width, int height, Graphics g) {
-
-	}
 
 	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
+	public JComponent getJComponent() {
+		return textField;
+	}
 
-		panel.add(textField);
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		onChanged();
+	}
 
-		textField.setColumns(10);
-		textField.setSize(width, height);
-		textField.setLocation(x, y);
-		textField.setEnabled(this.isActivated());
-		
+	public void onChanged() {
 
 	}
 
-	public void setMinMax(int min, int max) {
-		minValue = min;
-		maxValue = max;
-	}
-	
-	private String buildDecimal(int n, int d) {
+	private static String buildDecimal(int n, int d) {
 
 		String s = "";
 		for (int i = 0; i < n; i++) {
@@ -90,19 +78,6 @@ public class TextFieldComponent extends InputComponent {
 		}
 		return s;
 
-	}
-	
-	@Override
-	public Component getJComponent() {
-		return textField;
-	}
-
-	public int getMaxValue() {
-		return maxValue;
-	}
-
-	public int getMinValue() {
-		return minValue;
 	}
 
 }

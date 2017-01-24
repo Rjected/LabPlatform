@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
 
-import javax.swing.JPanel;
-
 import lab.PerlinNoiseGenerator;
 import lab.component.LabComponent;
 
@@ -152,11 +150,6 @@ public class Flame extends LabComponent {
 
 	private int clampColor(double c) {
 		return (int) Math.max(0, Math.min(255, c));
-	}
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-
 	}
 
 }

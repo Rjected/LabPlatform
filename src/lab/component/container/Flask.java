@@ -6,8 +6,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-
 import lab.component.VerticalGraduation;
 
 public class Flask extends Container {
@@ -103,11 +101,6 @@ public class Flask extends Container {
 		
 	}
 
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		
-	}
 
 	
 }

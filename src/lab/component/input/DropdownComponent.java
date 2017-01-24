@@ -1,59 +1,41 @@
 package lab.component.input;
 
-import java.awt.Graphics;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 
-import lab.component.LabComponent;
+public class DropdownComponent extends InputComponent implements ActionListener {
 
-public abstract class DropdownComponent extends LabComponent implements ActionListener {
-
-	private JComboBox<String> dropdown;
-	private ArrayList<String> dropdownList;
-
+	private final JComboBox<String> dropdown;
+	
 	public DropdownComponent(int width, int height, String... args) {
 		super(width, height);
 		
-		dropdownList = new ArrayList<String>();
-		
-		for (String c : args) {
-			dropdownList.add(c);
-		}
-		
 		dropdown = new JComboBox<String>(args);
-
-	}
-
-	@Override
-	public void draw(int x, int y, int width, int height, Graphics g) {
-
-	}
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		dropdown.setSize(width, height);
-		dropdown.setLocation(x, y);
+		
 		dropdown.addActionListener(this);
-		panel.add(dropdown);
+	}
+	
+	public String getSelectedItem() {
+		return (String) dropdown.getSelectedItem();
 	}
 
-	public JComboBox<String> getDropdown() {
+	@SuppressWarnings("unchecked")
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		onSelectItem((String) ((JComboBox<String>) e.getSource()).getSelectedItem());
+	}
+	
+	public void onSelectItem(String item) {
+		
+	}
+
+	@Override
+	public Component getJComponent() {
 		return dropdown;
 	}
-
-	public void setDropdown(JComboBox<String> dropdown) {
-		this.dropdown = dropdown;
-	}
-
-	public ArrayList<String> getDropdownList() {
-		return dropdownList;
-	}
-
-	public void setDropdownList(ArrayList<String> dropdownList) {
-		this.dropdownList = dropdownList;
-	}
-
+	
+	
 }

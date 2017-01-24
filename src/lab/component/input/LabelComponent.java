@@ -2,10 +2,8 @@ package lab.component.input;
 
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 public class LabelComponent extends InputComponent {
 
@@ -18,6 +16,10 @@ public class LabelComponent extends InputComponent {
 		label = new JLabel();
 		labelText = text;
 		
+	}
+	
+	public LabelComponent(int width, int height) {
+		this(width, height, "");
 	}
 	
 	@Override
@@ -34,6 +36,10 @@ public class LabelComponent extends InputComponent {
 		return labelText;
 	}
 	
+	public int getTextWidth() {
+		return label.getFontMetrics(label.getFont()).stringWidth(labelText);
+	}
+	
 	public void setFontSize(int size) {
 		label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, size));
 	}
@@ -43,20 +49,8 @@ public class LabelComponent extends InputComponent {
 	}
 	
 	@Override
-	public void draw(int x, int y, int width, int height, Graphics g) {
-
-	}
-
-	@Override
-	public void drawInputs(int x, int y, int width, int height, JPanel panel) {
-		panel.remove(label);
-		panel.add(label);
-		label.setSize(width, height);
-		label.setLocation(x, y);
-		label.setEnabled(this.isActivated());
-		
+	public void update() {
 		label.setText(labelText);
-
 	}
 	
 

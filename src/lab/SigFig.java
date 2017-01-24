@@ -11,6 +11,10 @@ public class SigFig {
 	
 	public static String sigfigalize(double num, int sigfigs) {
 		
+		if (num == 0) {
+			return "0";
+		}
+		
 		sigfigs--;
 
 		String strNum = Double.toString(num);
