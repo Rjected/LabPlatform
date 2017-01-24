@@ -1,4 +1,4 @@
-package test;
+package lab.substance;
 
 import java.awt.Color;
 
@@ -9,7 +9,7 @@ import lab.component.input.LabelComponent;
 public class Substance {
 	private boolean isReactant;
 	private double amount;
-	private String name;
+	private String name; //done
 	private String units;
 	
 	private Color color;
@@ -18,8 +18,17 @@ public class Substance {
 	private LabelComponent connectedLabel;
 	
 	private double heatOfVaporization;
+	private double heatOfFusion;
 	private double boilingPoint;
+	private double meltingPoint;
 	private double boilPressure;
+	private double molarMass;
+	
+	private String formula;
+	
+	public Substance() {
+		
+	}
 	
 	public Substance(String name,double amount,boolean isReactant) {
 		this.name = name;
@@ -131,6 +140,38 @@ public class Substance {
 
 	public void setBoilPressure(double boilPressure) {
 		this.boilPressure = boilPressure;
+	}
+
+	public double getMolarMass() {
+		return molarMass;
+	}
+
+	public void setMolarMass(double molarMass) {
+		this.molarMass = molarMass;
+	}
+
+	public String getFormula() {
+		return formula;
+	}
+
+	public void setFormula(String formula) {
+		this.formula = formula;
+	}
+
+	public double getMeltingPoint() {
+		return meltingPoint;
+	}
+
+	public void setMeltingPoint(double meltingPoint) {
+		this.meltingPoint = meltingPoint;
+	}
+
+	public double getHeatOfFusion() {
+		return heatOfFusion;
+	}
+
+	public void setHeatOfFusion(double heatOfFusion) {
+		this.heatOfFusion = heatOfFusion;
 	}
 
 }

@@ -18,6 +18,7 @@ import lab.component.input.SwitchComponent;
 import lab.component.input.TextFieldComponent;
 import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
+import lab.substance.SubstanceData;
 
 public class TestLab extends LabFrame {
 
@@ -25,6 +26,8 @@ public class TestLab extends LabFrame {
 	
 	public static void main(String[] args) {
 		new TestLab("Test Lab", 800, 800);
+		System.out.println("building default list");
+		SubstanceData.buildDefaultList();
 	}
 	
 	private final Graph graph;
