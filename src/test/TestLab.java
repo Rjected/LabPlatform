@@ -1,6 +1,7 @@
 package test;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import lab.LabFrame;
 import lab.component.HorizontalGraduation;
@@ -18,6 +19,7 @@ import lab.component.input.SwitchComponent;
 import lab.component.input.TextFieldComponent;
 import lab.component.sensor.Manometer;
 import lab.component.sensor.Thermometer;
+import lab.substance.Substance;
 import lab.substance.SubstanceData;
 
 public class TestLab extends LabFrame {
@@ -26,8 +28,12 @@ public class TestLab extends LabFrame {
 	
 	public static void main(String[] args) {
 		new TestLab("Test Lab", 800, 800);
-		System.out.println("building default list");
-		SubstanceData.buildDefaultList();
+		System.out.println("Importing default list");
+		
+		ArrayList<Substance> substances = SubstanceData.importSubstances();
+		for(Substance s: substances) {
+			System.out.println(s.getFormula());
+		}
 	}
 	
 	private final Graph graph;
@@ -42,6 +48,7 @@ public class TestLab extends LabFrame {
 	private final TextFieldComponent textInput;
 	private final ButtonComponent button;
 	private double t = 0;
+	private ArrayList<Substance> substances = SubstanceData.importSubstances();
 	
 	public TestLab(String name, int width, int height) {
 		super(name, width, height);
@@ -163,7 +170,11 @@ public class TestLab extends LabFrame {
 		
 		manometer.setValue((Math.sin(t / 100) + 1) * 760);
 		thermometer.setValue(((Math.sin(t / 100) + 1) * 130 / 2) - 30);
-		
+		try {
+			button.getButton().setLabel(substances.get(0).getFormula());
+		} catch(Exception e) {
+			button.getButton().setLabel("NOT FOUND");
+		}
 		
 	}
 
